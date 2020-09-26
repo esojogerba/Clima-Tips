@@ -4,16 +4,20 @@ import 'package:weather_app/screens/current_screen.dart';
 import 'package:weather_app/screens/daily_screen.dart';
 import 'package:weather_app/screens/hourly_screen.dart';
 import 'package:weather_app/screens/settings_screen.dart';
+import 'package:weather_app/services/auth.dart';
 
 //API Key: 956501a19b5653ae44c01509383e63a0
 
 class HomeScreen extends StatefulWidget {
+  //final AuthService _auth = AuthService();
+
   HomeScreen({Key key}) : super(key: key);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final AuthService _auth = AuthService();
   int currentIndex = 0;
 
   PageController _pageController = PageController();
@@ -42,6 +46,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue[400],
+        elevation: 0.0,
+        actions: <Widget>[
+          FlatButton.icon(
+            icon: Icon(Icons.person),
+            label: Text('logout'),
+            onPressed: () async {
+              await _auth.signOut();
+            },
+          ),
+        ],
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+      ),
       body: PageView(
         controller: _pageController,
         children: _screens,

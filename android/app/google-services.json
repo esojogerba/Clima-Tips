@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1032311282370",
+    "firebase_url": "https://weatherapp-dc880.firebaseio.com",
+    "project_id": "weatherapp-dc880",
+    "storage_bucket": "weatherapp-dc880.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032311282370:android:857317a6b4985f2416b95b",
+        "android_client_info": {
+          "package_name": "com.weatherapp.weather_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032311282370-uig09lr7ghgdbtgj510bif4f7lormh64.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSFF4n0H9Y1051aAvNzLb5D2El-ZdxZEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032311282370-uig09lr7ghgdbtgj510bif4f7lormh64.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
