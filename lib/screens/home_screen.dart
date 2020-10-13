@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/screens/current_screen.dart';
 import 'package:weather_app/screens/daily_screen.dart';
 import 'package:weather_app/screens/hourly_screen.dart';
-import 'package:weather_app/screens/settings_screen.dart';
+import 'package:weather_app/screens/tips_screen.dart';
 import 'package:weather_app/services/auth.dart';
 
 //API Key: 956501a19b5653ae44c01509383e63a0
@@ -46,34 +46,44 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[400],
-        elevation: 0.0,
-        actions: <Widget>[
-          FlatButton.icon(
-            icon: Icon(Icons.person),
-            label: Text('logout'),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-          ),
-        ],
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-      ),
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: AppBar(
+            backgroundColor: Color(0xFFFFFFFF),
+            elevation: 0.0,
+            actions: <Widget>[
+              FlatButton.icon(
+                icon: Icon(
+                  Icons.person,
+                  color: Color(0xFF6190E8),
+                ),
+                label: Text(
+                  'Log Out',
+                  style: GoogleFonts.montserrat(
+                    color: Color(0xFF6190E8),
+                  ),
+                ),
+                onPressed: () async {
+                  await _auth.signOut();
+                },
+              ),
+            ],
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+          )),
       body: PageView(
         controller: _pageController,
         children: _screens,
         onPageChanged: _onPageChanged,
         physics: NeverScrollableScrollPhysics(),
       ),
-      backgroundColor: Color(0xFFF6FEFF),
+      backgroundColor: Color(0xFFFFFFFF),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        backgroundColor: Color(0xFFD4FFF7),
+        backgroundColor: Color(0xFFFFFFFF),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Color(0xFF005365),
-        unselectedItemColor: Color(0xFF0084A0),
+        selectedItemColor: Color(0xFF6190E8),
+        unselectedItemColor: Colors.blueGrey[300],
         items: [
           BottomNavigationBarItem(
             icon: Icon(
@@ -104,10 +114,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.settings,
+              Icons.lightbulb_outline,
             ),
             title: Text(
-              'Settings',
+              'Tips',
               style: GoogleFonts.montserrat(),
             ),
           ),
