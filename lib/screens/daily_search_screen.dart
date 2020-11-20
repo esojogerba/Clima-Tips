@@ -4,23 +4,23 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/models/day.dart';
-import 'package:weather_app/screens/daily_search_screen.dart';
 
-class DailyScreen extends StatefulWidget {
+class DailySearchScreen extends StatefulWidget {
+  String value;
+
+  DailySearchScreen({Key, key, this.value}) : super(key: key);
+
   @override
-  _DailyScreenState createState() => _DailyScreenState();
+  _DailySearchScreenState createState() => _DailySearchScreenState();
 }
 
-class _DailyScreenState extends State<DailyScreen> {
+class _DailySearchScreenState extends State<DailySearchScreen> {
   //Varibles used to retrieve data from openweathermap API.
   var city;
   var lat;
   var long;
 
   var dailyWeather = new List<DayWeather>();
-
-  //Variable for passing search bar data
-  var _textController = new TextEditingController();
 
   //Used to capitalize strings.
   String capitalize(String string) {
@@ -67,13 +67,21 @@ class _DailyScreenState extends State<DailyScreen> {
   }
 
   Future getWeather() async {
-    //Gets Position using geolocator.
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
-    //Sets latitude and longitude.
+    //Retrieves data from API.
+    //This first call is used to get the latitude and longitude of the city that was searched.
+    http.Response response1 = await http.get(
+        "http://api.openweathermap.org/data/2.5/weather?q=" +
+            "${widget.value}" +
+            "&appid=956501a19b5653ae44c01509383e63a0");
+
+    //"${widget.value}"
+
+    //API results are in JSON format so they must be decoded.
+    var results = jsonDecode(response1.body);
+    //Variables are set to their corresponding information.
     setState(() {
-      lat = position.latitude;
-      long = position.longitude;
+      this.long = results['coord']['lon'];
+      this.lat = results['coord']['lat'];
     });
 
     //Retrieves data from the API
@@ -87,7 +95,7 @@ class _DailyScreenState extends State<DailyScreen> {
 
     http.Response response = await http.get(url1);
     //API results are in JSON format so they must be decoded.
-    var results = jsonDecode(response.body);
+    results = jsonDecode(response.body);
     //Name of city is retrived from first API call.
     setState(() {
       this.city = results['name'];
@@ -143,6 +151,14 @@ class _DailyScreenState extends State<DailyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(40.0),
+            child: AppBar(
+              backgroundColor: Color(0xFFFFFFFF),
+              elevation: 0.0,
+              // Here we take the value from the MyHomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+            )),
         backgroundColor: Color(0xFF6190E8),
         body: Container(
             decoration: BoxDecoration(
@@ -156,58 +172,7 @@ class _DailyScreenState extends State<DailyScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                        width: 350,
-                        height: 30,
-                        margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              width: 300,
-                              height: 30,
-                              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                              child: TextField(
-                                  key: Key('search-bar'),
-                                  controller: _textController,
-                                  decoration: InputDecoration(
-                                    //color: Color(0xFFFFFFFF),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(30.0),
-                                      ),
-                                    ),
-                                    prefixIcon: Icon(
-                                      Icons.search,
-                                      color: Color(0xFFFFFFFF),
-                                      size: 25,
-                                    ),
-                                  )),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              child: Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    var route = new MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          new DailySearchScreen(
-                                              value: _textController.text),
-                                    );
-                                    Navigator.of(context).push(route);
-                                  },
-                                  icon: Icon(Icons.search),
-                                  color: Color(0xFFFFFFFF),
-                                ),
-                              ),
-                            )
-                          ],
-                        )),
-                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                       child: Text(city != null ? city.toString() : "---",
                           style: GoogleFonts.montserrat(
                             fontSize: 30,

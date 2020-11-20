@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
-import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/screens/current_search_screen.dart';
 
 //API Key: 956501a19b5653ae44c01509383e63a0
 
-class CurrentScreen extends StatefulWidget {
+class CurrentSearchScreen extends StatefulWidget {
+  String value;
+
+  CurrentSearchScreen({Key, key, this.value}) : super(key: key);
+
   @override
-  _CurrentScreenState createState() => _CurrentScreenState();
+  _CurrentSearchScreenState createState() => _CurrentSearchScreenState();
 }
 
-class _CurrentScreenState extends State<CurrentScreen> {
+class _CurrentSearchScreenState extends State<CurrentSearchScreen> {
   //Variables used to retrive data from openweathermap API.
   var temperature;
   var conditions;
@@ -23,9 +25,6 @@ class _CurrentScreenState extends State<CurrentScreen> {
   var iconCode;
   var lat;
   var long;
-
-  //Variable for passing search bar data
-  var _textController = new TextEditingController();
 
   //Used to capitalize strings.
   String capitalize(String string) {
@@ -41,26 +40,34 @@ class _CurrentScreenState extends State<CurrentScreen> {
   }
 
   Future getWeather() async {
-    //Gets Position using geolocator.
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
-    //Sets latitude and longitude.
+    //Retrieves data from API.
+    //This first call is used to get the latitude and longitude of the city that was searched.
+    http.Response response1 = await http.get(
+        "http://api.openweathermap.org/data/2.5/weather?q=" +
+            "${widget.value}" +
+            "&appid=956501a19b5653ae44c01509383e63a0");
+
+    //"${widget.value}"
+
+    //API results are in JSON format so they must be decoded.
+    var results = jsonDecode(response1.body);
+    //Variables are set to their corresponding information.
     setState(() {
-      lat = position.latitude;
-      long = position.longitude;
+      this.long = results['coord']['lon'];
+      this.lat = results['coord']['lat'];
     });
 
     //Retrieves data from the API
     //Values of Latitude and Longitude are concatenated into the url to retrive the correct
     //information based on the user's current location.
-    http.Response response = await http.get(
+    http.Response response2 = await http.get(
         "http://api.openweathermap.org/data/2.5/weather?lat=" +
             lat.toString() +
             "&lon=" +
             long.toString() +
             "&units=imperial&appid=956501a19b5653ae44c01509383e63a0");
     //API results are in JSON format so they must be decoded.
-    var results = jsonDecode(response.body);
+    results = jsonDecode(response2.body);
     //Variables are set to their corresponding information.
     setState(() {
       this.temperature = results['main']['temp'].round();
@@ -80,10 +87,18 @@ class _CurrentScreenState extends State<CurrentScreen> {
     super.initState();
   }
 
-  //Builds the CurrentScreen page.
+  //Builds the CurrentSearchScreen page.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: PreferredSize(
+            preferredSize: Size.fromHeight(40.0),
+            child: AppBar(
+              backgroundColor: Color(0xFFFFFFFF),
+              elevation: 0.0,
+              // Here we take the value from the MyHomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+            )),
         backgroundColor: Color(0xFF6190E8),
         body: Container(
             decoration: BoxDecoration(
@@ -98,66 +113,24 @@ class _CurrentScreenState extends State<CurrentScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                        width: 350,
-                        height: 30,
-                        margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-                        child: Row(
+                        margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              width: 300,
-                              height: 30,
-                              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                              child: TextField(
-                                  key: Key('search-bar'),
-                                  controller: _textController,
-                                  decoration: InputDecoration(
-                                    //color: Color(0xFFFFFFFF),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(30.0),
-                                      ),
-                                    ),
-                                    prefixIcon: Icon(
-                                      Icons.search,
-                                      color: Color(0xFFFFFFFF),
-                                      size: 25,
-                                    ),
-                                  )),
-                            ),
-                            Container(
-                              width: 30,
-                              height: 30,
-                              child: Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  onPressed: () {
-                                    var route = new MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          new CurrentSearchScreen(
-                                              value: _textController.text),
-                                    );
-                                    Navigator.of(context).push(route);
-                                  },
-                                  icon: Icon(Icons.search),
+                            Text(city != null ? city.toString() : "---",
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 30,
                                   color: Color(0xFFFFFFFF),
-                                ),
-                              ),
-                            )
+                                )),
+                            Text(
+                                currently != null
+                                    ? currently.toString()
+                                    : "---",
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 20,
+                                  color: Color(0xFFFFFFFF),
+                                )),
                           ],
-                        )),
-                    Text(city != null ? city.toString() : "---",
-                        style: GoogleFonts.montserrat(
-                          fontSize: 30,
-                          color: Color(0xFFFFFFFF),
-                        )),
-                    Text(currently != null ? currently.toString() : "---",
-                        style: GoogleFonts.montserrat(
-                          fontSize: 20,
-                          color: Color(0xFFFFFFFF),
                         )),
                     Container(
                         width: 300,
@@ -205,7 +178,7 @@ class _CurrentScreenState extends State<CurrentScreen> {
                                   size: 30,
                                 )),
                             Container(
-                                width: 120,
+                                width: 130,
                                 alignment: Alignment.center,
                                 padding: const EdgeInsets.all(10.0),
                                 margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
@@ -215,7 +188,7 @@ class _CurrentScreenState extends State<CurrentScreen> {
                                       color: Color(0xFF6190E8),
                                     ))),
                             Container(
-                                width: 160,
+                                width: 150,
                                 alignment: Alignment.center,
                                 padding: const EdgeInsets.all(10.0),
                                 margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
