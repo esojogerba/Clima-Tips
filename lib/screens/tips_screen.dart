@@ -164,7 +164,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     color: Color(0xFFFFFFFF)),
               ),
 
-               Text( "--------------------------",
+               Text( "-------------------------",
                   style: GoogleFonts.montserrat(
                       fontSize: 35, color: Color(0xFFFFFFFF))),
 
