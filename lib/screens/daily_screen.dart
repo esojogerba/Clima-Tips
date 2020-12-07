@@ -68,8 +68,8 @@ class _DailyScreenState extends State<DailyScreen> {
 
   Future getWeather() async {
     //Gets Position using geolocator.
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
     //Sets latitude and longitude.
     setState(() {
       lat = position.latitude;
@@ -107,6 +107,7 @@ class _DailyScreenState extends State<DailyScreen> {
     var dailyCopy = new List<DayWeather>();
     //New DayWeather object that will be used to hold a temporary copy to pass into the list.
     DayWeather clone;
+    //Holds the current date
     var currDate = DateTime.now();
 
     //Copies each of the 8 days of daily weather provided by the API into dailyCopy

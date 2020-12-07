@@ -7,7 +7,10 @@ import 'dart:convert';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/screens/current_search_screen.dart';
 
+//import '../../../../Flutter/flutter/packages/flutter/lib/cupertino.dart';
 
+//import '../../../../Flutter/flutter/packages/flutter/lib/cupertino.dart';
+//import '../../../../Flutter/flutter/packages/flutter/lib/cupertino.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -15,8 +18,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
-   var temperature;
+  var temperature;
   var conditions;
   var currently;
   var humidity;
@@ -44,8 +46,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future getWeather() async {
     //Gets Position using geolocator.
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
     //Sets latitude and longitude.
     setState(() {
       lat = position.latitude;
@@ -79,34 +81,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     this.getWeather();
-    
+
     super.initState();
   }
- String getMessage(int temp) {
+
+  String getMessage(int temp) {
     if (temp > 85) {
-      return 'It\'s hot outside!🍦 time ';
+      return 'It\'s hot outside! 🍦 time ';
     } else if (temp > 65) {
-      return 'Time for shorts and 👕  ';
+      return 'Time for shorts and 👕 ';
     } else if (temp > 55) {
       return 'Bring a 🧥 just in case ';
     } else {
-      return 'It\'s cold outside!You\'ll need 🧣 and 🧤 ';
+      return 'It\'s cold outside! You\'ll need 🧣 and 🧤 ';
     }
   }
 
   String getCondition(String conditions) {
-    if (conditions !='clear sky') {
+    if (conditions != 'clear sky') {
       return 'High chance of 🌧 don\'t forget your ☔️';
-    }else
-    {
-       return 'The sky is clear,enjoy the beauiful day ☀️' ;
+    } else {
+      return 'The sky is clear, enjoy the beauiful day ☀️';
     }
-
   }
 
-  String getActivity(int temp)
-  {
-    if (temp >80) {
+  String getActivity(int temp) {
+    if (temp > 80) {
       return ' Travel to the nearest beach, wear sun block';
     } else if (temp > 70) {
       return ' Go to a park, or a lake near by! ';
@@ -116,71 +116,187 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return ' Stay indoors, watch a movie at home!';
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF6190E8),
-      body: Container(
-         margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [const Color(0xFFA7BFE8), const Color(0xFF6190E8)],
-          )),
+        body: Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [const Color(0xFFA7BFE8), const Color(0xFF6190E8)],
+      )),
+      child: SingleChildScrollView(
           child: Center(
-              child: Column(
-                 crossAxisAlignment: CrossAxisAlignment.center,
-           // mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-               Text( "           ",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 20, color: Color(0xFFFFFFFF))),
-              Text(conditions != null ? getCondition(conditions) : "---",
-               
-                key: Key('weathercondition'),
-                style: GoogleFonts.montserrat(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFFFFFFF)),
-              ),
-
-               Text( "           ",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 20, color: Color(0xFFFFFFFF))),
-              Text('🤷' ,
-               
-                style: GoogleFonts.montserrat(
-                    fontSize: 50,
-                   // fontWeight: FontWeight.bold,
-                    color: Color(0xFFFFFFFF)),
-              ),
-              Text(temperature != null ? getMessage(temperature) : "---",
-               
-                key: Key('weathermessage'),
-                style: GoogleFonts.montserrat(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFFFFFFF)),
-              ),
-
-               Text( "-------------------------",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 35, color: Color(0xFFFFFFFF))),
-
-                      
-                       Text("Activity suggestion :      ",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 30, color:Color(0xFFFFEB3B))),
-              Text(temperature != null ? getActivity(temperature) : "---",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 30, color: Color(0xFFFFFFFF)))
-            ],
-          ))),
-    );
+              child: Padding(
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Tips for Current Conditions",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 25,
+                          color: Color(0xFF6190E8),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      height: 3,
+                      thickness: 2,
+                      color: Color(0xFF6190E8),
+                      indent: 5,
+                      endIndent: 5,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                      alignment: Alignment.center,
+                      child: Text(
+                        conditions != null ? getCondition(conditions) : "---",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                          color: Color(0xFF6190E8),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+            Container(
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Recommended Attire",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 25,
+                          color: Color(0xFF6190E8),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      height: 3,
+                      thickness: 2,
+                      color: Color(0xFF6190E8),
+                      indent: 5,
+                      endIndent: 5,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                      alignment: Alignment.center,
+                      child: Text(
+                        temperature != null ? getMessage(temperature) : "---",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                          color: Color(0xFF6190E8),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+            Container(
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Activity Suggestion",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 25,
+                          color: Color(0xFF6190E8),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      height: 3,
+                      thickness: 2,
+                      color: Color(0xFF6190E8),
+                      indent: 5,
+                      endIndent: 5,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                      alignment: Alignment.center,
+                      child: Text(
+                        temperature != null ? getActivity(temperature) : "---",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.montserrat(
+                          fontSize: 20,
+                          color: Color(0xFF6190E8),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+          ],
+        ),
+      ))),
+    ));
   }
 }
-
-
 
 //new code

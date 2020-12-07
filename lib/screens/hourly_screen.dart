@@ -37,8 +37,8 @@ class _HourlyScreenState extends State<HourlyScreen> {
 
   Future getWeather() async {
     //Gets Position using geolocator.
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
     //Sets latitude and longitude.
     setState(() {
       lat = position.latitude;

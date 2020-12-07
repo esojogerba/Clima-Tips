@@ -42,8 +42,10 @@ class _CurrentScreenState extends State<CurrentScreen> {
 
   Future getWeather() async {
     //Gets Position using geolocator.
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    LocationPermission permission = await Geolocator.requestPermission();
+    print(permission.toString());
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
     //Sets latitude and longitude.
     setState(() {
       lat = position.latitude;
@@ -102,7 +104,8 @@ class _CurrentScreenState extends State<CurrentScreen> {
                         height: 30,
                         margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
                               width: 300,
